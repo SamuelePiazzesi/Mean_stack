@@ -1,4 +1,7 @@
+import { Post } from './posts/post.model';
 import { Component } from '@angular/core';
+
+
 
 @Component({
   selector: 'app-root',
@@ -6,5 +9,4 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'app';
 }
