@@ -1,3 +1,4 @@
+import { AuthService } from './../auth/auth.service';
 
 import { HttpClient } from '@angular/common/http';
 import { Post } from './post.model';
@@ -10,7 +11,7 @@ import { Router } from '@angular/router';
 })
 export class PostsService {
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private authService: AuthService) {}
 
   private posts: Post[] = [];
   private postsUpdated = new Subject<{posts: Post[], postCount: number}>();
