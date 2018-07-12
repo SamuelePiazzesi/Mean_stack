@@ -39,7 +39,8 @@ router.post('', checkAuthMiddle, multer({
     title: req.body.title,
     content: req.body.content,
     imagePath: url + "/images/" + req.file.filename,
-    "creator": req.userData.userId
+    creator: req.userData.userId,
+    username: req.body.username
 
   });
   post.save().then(postAdded => {
@@ -49,10 +50,14 @@ router.post('', checkAuthMiddle, multer({
         id: postAdded._id,
         title: postAdded.title,
         content: postAdded.content,
-        imagePath: postAdded.imagePath
+        imagePath: postAdded.imagePath,
+        username: postAdded.username
       }
     });
-  });
+  })
+  .catch(error => {
+    res.status(500).json({message: 'ATTENZIONE: impossibile creare il Post'})
+  })
 })
 
 router.put('/:id',  checkAuthMiddle, multer({
@@ -68,9 +73,10 @@ router.put('/:id',  checkAuthMiddle, multer({
     title: req.body.title,
     content: req.body.content,
     imagePath: imagePath,
-    creator: req.userData.userId
+    creator: req.userData.userId,
+    username: req.body.username
   })
-  console.log(post);
+
 
   Post.updateOne({
       _id: req.params.id,
@@ -88,6 +94,9 @@ router.put('/:id',  checkAuthMiddle, multer({
      }
 
     })
+    .catch(error => {
+      res.status(500).json({message:'Non è possibile aggiornare il post'})
+    })
 })
 
 router.get('/:id', (req, res, next) => {
@@ -99,6 +108,9 @@ router.get('/:id', (req, res, next) => {
         message: 'post not found'
       });
     }
+  })
+  .catch(error => {
+    res.status(500).json({message: 'Impossibile trovare il post'})
   })
 })
 
@@ -123,7 +135,10 @@ router.get('', (req, res, next) => {
       posts: fetchedPost,
       maxPosts: count
     });
-  });
+  })
+  .catch(error => {
+    res.status(500).json({message: 'Impossibile caricare i Post'})
+  })
 });
 
 router.delete('/:id', checkAuthMiddle, (req, res, next) => {
@@ -141,6 +156,9 @@ router.delete('/:id', checkAuthMiddle, (req, res, next) => {
           message: 'non sei l\'utente creatore del post'
         });
        }
+    })
+    .catch(error => {
+      res.status(500).json({message: 'Impossibile eliminare il post'})
     })
 })
 

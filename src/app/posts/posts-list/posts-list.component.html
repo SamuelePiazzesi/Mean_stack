@@ -1,8 +1,15 @@
 <mat-accordion *ngIf="listedPosts.length > 0 && !isLoading">
   <mat-expansion-panel *ngFor="let post of listedPosts">
-    <mat-expansion-panel-header>
-      {{ post.title }}
+    <mat-expansion-panel-header class="user">
+      <mat-panel-title>
+        {{post.title}}
+      </mat-panel-title>
+      <mat-panel-description class="user-icon" >
+          <mat-icon>account_circle</mat-icon>
+        {{post.username}}
+      </mat-panel-description>
     </mat-expansion-panel-header>
+
     <div class="post-img">
       <img [src]="post.imagePath" [alt]="post.title">
     </div>

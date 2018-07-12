@@ -2,7 +2,7 @@ import { PostsService } from './../posts.service';
 import { Post } from './../post.model';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { PageEvent, MatSnackBar } from '@angular/material';
+import { PageEvent } from '@angular/material';
 import { AuthService } from '../../auth/auth.service';
 
 
@@ -21,10 +21,9 @@ export class PostsListComponent implements OnInit, OnDestroy {
   ];
   isLoading = false;
   isUserAuthenticated = false;
-  isUsername = false;
+
   userId: string;
   username: string;
-
   totalPosts = 0;
   postsPerPage = 2;
   currentPage = 1;
@@ -34,7 +33,7 @@ export class PostsListComponent implements OnInit, OnDestroy {
   private userAuthSubscription: Subscription;
 
 
-  constructor(public userSnackBar: MatSnackBar, private postsService: PostsService, private authService: AuthService) { }
+  constructor( private postsService: PostsService, private authService: AuthService) { }
 
   ngOnInit() {
     this.isLoading = true;
@@ -47,15 +46,6 @@ export class PostsListComponent implements OnInit, OnDestroy {
         this.listedPosts = postData.posts;
     });
     this.isUserAuthenticated = this.authService.getisAuthenticated();
-    this.isUsername = this.authService.getIsUserName();
-    if (this.isUsername) {
-     setTimeout(() => {
-        this.userSnackBar.open(`hello ${this.username}`, 'undo', {
-          duration: 4000
-        });
-     });
-    }
-    console.log(this.isUsername);
     this.userAuthSubscription = this.authService.getAuthStatusListener()
       .subscribe(isAuthenticated => {
         this.isUserAuthenticated = isAuthenticated;
@@ -78,13 +68,14 @@ export class PostsListComponent implements OnInit, OnDestroy {
     this.postsService.deletePost(postId)
     .subscribe(() => {
     this.postsService.getPosts(this.postsPerPage, this.currentPage);
+    }, () => {
+      this.isLoading = false;
     });
     }
 
   ngOnDestroy() {
     this.postsSub.unsubscribe();
     this.userAuthSubscription.unsubscribe();
-    this.isUsername = false;
   }
 
 

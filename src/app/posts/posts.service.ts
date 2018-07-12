@@ -36,7 +36,8 @@ export class PostsService {
             content: post.content,
             id: post._id,
             imagePath: post.imagePath,
-            creator: post.creator
+            creator: post.creator,
+            username: post.username
           };
         }),
       maxPosts: postData.maxPosts
@@ -53,7 +54,7 @@ export class PostsService {
 
   getPost(id: string) {
     return this.http.get<{_id: string, title: string, content: string, imagePath: string,
-       creator: string}>('http://localhost:3000/api/posts/' + id);
+       creator: string, username: string}>('http://localhost:3000/api/posts/' + id);
   }
 
   addPost(post: Post, image: File) {
@@ -62,13 +63,14 @@ export class PostsService {
     postData.append('title', post.title);
     postData.append('content', post.content);
     postData.append('image', image, post.title);
+    postData.append('username', post.username);
     this.http.post<{message: String, post: Post}>('http://localhost:3000/api/posts', postData )
     .subscribe((responseData) => {
         this.router.navigate(['/']);
     });
   }
 
-  updatePost(id: string, title: string, content: string, image: File | string) {
+  updatePost(id: string, title: string, content: string, image: File | string, username: string) {
       let post: Post | FormData;
       if (typeof(image) === 'object') {
         post = new FormData();
@@ -77,7 +79,7 @@ export class PostsService {
         post.append('content', content);
         post.append('image', image, title);
       } else {
-        post = {id: id, title: title, content: content, imagePath: image, creator: null};
+        post = {id: id, title: title, content: content, imagePath: image, creator: null, username: null};
       }
       this.http.put('http://localhost:3000/api/posts/' + id, post)
       .subscribe(response => {

@@ -6,7 +6,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { BrowserAnimationsModule,  } from '@angular/platform-browser/animations';
 import { MatInputModule, MatCardModule, MatButtonModule,
         MatToolbarModule, MatExpansionModule, MatProgressSpinnerModule,
-        MatPaginatorModule, MatSnackBarModule, MatDialogModule } from '@angular/material';
+        MatPaginatorModule, MatSnackBarModule, MatDialogModule, MatIconModule } from '@angular/material';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
@@ -45,6 +45,7 @@ import { ErrorComponent } from './error/error.component';
     MatPaginatorModule,
     MatSnackBarModule,
     MatDialogModule,
+    MatIconModule,
     HttpClientModule,
     AppRoutingModule
   ],
