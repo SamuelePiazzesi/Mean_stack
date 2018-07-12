@@ -38,7 +38,8 @@ router.post('', checkAuthMiddle, multer({
   const post = new Post({
     title: req.body.title,
     content: req.body.content,
-    imagePath: url + "/images/" + req.file.filename
+    imagePath: url + "/images/" + req.file.filename,
+    "creator": req.userData.userId
 
   });
   post.save().then(postAdded => {
@@ -66,18 +67,26 @@ router.put('/:id',  checkAuthMiddle, multer({
     _id: req.body.id,
     title: req.body.title,
     content: req.body.content,
-    imagePath: imagePath
+    imagePath: imagePath,
+    creator: req.userData.userId
   })
   console.log(post);
 
   Post.updateOne({
-      _id: req.params.id
+      _id: req.params.id,
+      creator: req.userData.userId
     }, post)
     .then((result) => {
-      console.log(result);
+     if (result.nModified > 0) {
       res.status(201).json({
         message: 'post edited succesfully"'
       });
+     } else {
+      res.status(401).json({
+        message: 'non sei l\'utente creatore del post'
+      });
+     }
+
     })
 })
 
@@ -119,12 +128,19 @@ router.get('', (req, res, next) => {
 
 router.delete('/:id', checkAuthMiddle, (req, res, next) => {
   Post.deleteOne({
-      _id: req.params.id
+      _id: req.params.id,
+      creator: req.userData.userId
     })
     .then(result => {
-      res.status(200).json({
-        message: 'post deleted'
-      });
+      if (result.n > 0) {
+        res.status(201).json({
+          message: 'post edited succesfully"'
+        });
+       } else {
+        res.status(401).json({
+          message: 'non sei l\'utente creatore del post'
+        });
+       }
     })
 })
 

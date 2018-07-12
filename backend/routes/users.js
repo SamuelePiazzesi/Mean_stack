@@ -8,11 +8,13 @@ const User = require('../models/user');
 const router = express.Router();
 
 router.post('/signup', (req, res, next) =>{
-    bcrypt.hash(req.body.password, 10)
+    console.log(req.body);
+    bcrypt.hash(req.body.authData.password, 10)
       .then(hash => {
         const user = new User({
-          email: req.body.email,
-          password: hash
+          email: req.body.authData.email,
+          password: hash,
+          username: req.body.username
         });
         user.save()
           .then(result => {
@@ -44,8 +46,8 @@ router.post('/login', (req, res, next) => {
       if (!result) {
         return res.status(401).json({message: 'Auth failed'});
       }
-      const token = jwt.sign({email:foundUser.email, userId: foundUser. _id}, 'secret_should_be_longer', {expiresIn: '1h'});
-      res.status(200).json({message: 'auth success', token, expiresIn: 3600});
+      const token = jwt.sign({email:foundUser.email, userId: foundUser._id}, 'secret_should_be_longer', {expiresIn: '1h'});
+      res.status(200).json({message: 'auth success', token, expiresIn: 3600, userId: foundUser._id, username: foundUser.username});
     })
     .catch(err => {
       console.log(err);

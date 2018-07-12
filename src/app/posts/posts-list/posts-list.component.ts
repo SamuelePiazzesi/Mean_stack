@@ -2,7 +2,7 @@ import { PostsService } from './../posts.service';
 import { Post } from './../post.model';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { PageEvent } from '@angular/material';
+import { PageEvent, MatSnackBar } from '@angular/material';
 import { AuthService } from '../../auth/auth.service';
 
 
@@ -21,6 +21,10 @@ export class PostsListComponent implements OnInit, OnDestroy {
   ];
   isLoading = false;
   isUserAuthenticated = false;
+  isUsername = false;
+  userId: string;
+  username: string;
+
   totalPosts = 0;
   postsPerPage = 2;
   currentPage = 1;
@@ -29,22 +33,34 @@ export class PostsListComponent implements OnInit, OnDestroy {
   private postsSub: Subscription;
   private userAuthSubscription: Subscription;
 
-  constructor(private postsService: PostsService, private authService: AuthService) { }
+
+  constructor(public userSnackBar: MatSnackBar, private postsService: PostsService, private authService: AuthService) { }
 
   ngOnInit() {
     this.isLoading = true;
     this.postsService.getPosts(this.postsPerPage, this.currentPage);
+    this.userId = this.authService.getUserId();
+    this.username = this.authService.getUserName();
     this.postsSub = this.postsService.getPostUpdated().subscribe(( postData: {posts: Post[], postCount: number}) => {
       this.totalPosts = postData.postCount;
       this.isLoading = false;
         this.listedPosts = postData.posts;
     });
     this.isUserAuthenticated = this.authService.getisAuthenticated();
+    this.isUsername = this.authService.getIsUserName();
+    if (this.isUsername) {
+     setTimeout(() => {
+        this.userSnackBar.open(`hello ${this.username}`, 'undo', {
+          duration: 4000
+        });
+     });
+    }
+    console.log(this.isUsername);
     this.userAuthSubscription = this.authService.getAuthStatusListener()
       .subscribe(isAuthenticated => {
         this.isUserAuthenticated = isAuthenticated;
+        this.userId = this.authService.getUserId();
       });
-
   }
 
   onChangedPage(pageData: PageEvent) {
@@ -68,6 +84,7 @@ export class PostsListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.postsSub.unsubscribe();
     this.userAuthSubscription.unsubscribe();
+    this.isUsername = false;
   }
 
 

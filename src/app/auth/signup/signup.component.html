@@ -5,6 +5,17 @@
 
   <form  #signupForm="ngForm" (submit)="onSignup(signupForm)" >
     <mat-form-field>
+          <input
+            matInput
+            type="text"
+            name="username"
+            ngModel
+            required
+            placeholder="Username"
+            #usernameInput="ngModel"
+           >
+    </mat-form-field>
+    <mat-form-field>
       <input
         matInput
         type="text"
@@ -16,7 +27,7 @@
         #emailInput="ngModel"
        >
       <mat-error *ngIf="emailInput.invalid">Please enter a valid email.</mat-error>
-    </mat-form-field>
+      </mat-form-field>
     <mat-form-field>
       <input
         type="password"

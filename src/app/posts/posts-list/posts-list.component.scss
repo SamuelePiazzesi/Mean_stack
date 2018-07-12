@@ -5,6 +5,10 @@
 
 .info-text {
   text-align: center;
+
+  &.mat-body-2 {
+    color: white;
+  }
 }
 
 mat-spinner {
