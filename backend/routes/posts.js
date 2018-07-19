@@ -46,4 +46,5 @@ router.get('', PostsController.getPosts);
 
 router.delete('/:id', checkAuthMiddle, PostsController.deletePost)
 
+
 module.exports = router;
